@@ -1,0 +1,13 @@
+# Jetbrain IDE
+.idea
+
+# Data
+data
+
+# Python
+venv
+inspacy/__pycache__
+
+# Misc
+inspacy/excluded
+debug

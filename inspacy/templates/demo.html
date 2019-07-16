@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/demo.css') }}" />
+    <link rel="icon" href="{{ url_for('static', filename='style/inspacy.png') }}">
+    <title>Inspacy Demo</title>
+</head>
+<body>
+<div class="main">
+    <h1>Inspacy Demo</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="input">
+            <label>
+                <textarea class="input-text" name="text" placeholder="Enter your text here"></textarea>
+            </label>
+        </div>
+        <div class="settings">
+            <h4>Settings</h4>
+            <label>
+                <input type="checkbox" name="dep">
+                Dependencies
+            </label>
+        </div>
+        <div class="button">
+            <input class="input-button" type="submit" value="Analyze">
+        </div>
+    </form>
+    {% if ent %}
+        <div class="entity">
+            <h4>Entity</h4>
+            {{ ent }}
+        </div>
+    {% endif %}
+    {% if dep %}
+        <div class="dependencies">
+            <h4>Dependencies</h4>
+            {{ dep }}
+        </div>
+    {% endif %}
+</div>
+</body>
+</html>
