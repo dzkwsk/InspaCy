@@ -1,4 +1,5 @@
 import requests
+import os
 
 
 class KnowledgeBase:
@@ -27,8 +28,15 @@ class KnowledgeBase:
         """
         params = {"query": query}
         nes = []
+        proxies = {}
 
-        response = requests.get(url=url, headers=headers, params=params).json()
+        # Yep, dirty...
+        if os.environ['HTTP_PROXY']:
+            proxies = {
+                'http': os.environ['HTTP_PROXY']
+            }
+
+        response = requests.get(url=url, headers=headers, params=params, proxies=proxies).json()
         for bind in response["results"]["bindings"]:
             entity = bind["libelle"]["value"].lower().translate(cls.TRANSLATION_CHAR_TABLE)
             id = bind["concept"]["value"].split('/')[-1]
