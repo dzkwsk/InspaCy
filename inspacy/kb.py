@@ -31,7 +31,7 @@ class KnowledgeBase:
         proxies = {}
 
         # Yep, dirty...
-        if os.environ['HTTP_PROXY']:
+        if 'HTTP_PROXY' in os.environ:
             proxies = {
                 'http': os.environ['HTTP_PROXY']
             }

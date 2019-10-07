@@ -13,7 +13,7 @@ python -m venv ./venv
 Install dependencies :
 ```bash
 source venv/bin/activate
-pip isntall -r requirements.txt
+pip install -r requirements.txt
 python -m spacy download fr_core_news_md
 ```
 
