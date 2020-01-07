@@ -1,3 +1,4 @@
+language: python
 services:
   - docker
 
@@ -8,7 +9,7 @@ deploy:
   skip_cleanup: true
   provider: script
   script:
-    echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
+    echo "$DOCKER_USERNAME" && echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
     && docker push inseefrlab/inspacy
   on:
     branch: master
