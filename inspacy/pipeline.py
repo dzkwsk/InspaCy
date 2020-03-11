@@ -18,7 +18,7 @@ class Pipeline:
         self.nlp = builder.get_pipeline()
         self.debug = json.loads(cfg['InspaCy'].get('debug'))
 
-        rules = KnowledgeBase.insee_rules(builder)
+        rules, self.definitions, self.entities = KnowledgeBase.insee_rules(builder)
 
         if self.debug:
             with open(os.environ['INSPACY_HOME'] + "/debug/rules.jsonl", mode="w") as file:
@@ -37,13 +37,16 @@ class Pipeline:
         if format == 'html':
             return displacy.render(doc, style='ent', minify=True), displacy.render(doc, style='dep', minify=True)
         elif format == 'json':
-            return __class__.pipe_jsonify(doc)
+            return __class__.pipe_jsonify(self.definitions, self.entities, doc)
         else:
             return doc
 
     @staticmethod
-    def pipe_jsonify(doc):
+    def pipe_jsonify(definitions, entities, doc):
         result = doc.to_json()
         result["ents"] = [{"start": ent.start_char, "end": ent.end_char,
-                           "label": ent.label_, "link": ent._.link} for ent in doc.ents]
+                           "label": ent.label_, "link": ent._.link,
+                           "entity": entities[ent.ent_id_],
+                           "definition": definitions["standard"][ent.ent_id_] if (ent.ent_id_ in definitions["standard"]) else "",
+                           "shortDefinition": definitions["short"][ent.ent_id_] if (ent.ent_id_ in definitions["short"]) else ""} for ent in doc.ents]
         return result

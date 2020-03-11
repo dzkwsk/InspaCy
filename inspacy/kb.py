@@ -14,20 +14,35 @@ class KnowledgeBase:
         headers = {"Accept": "application/json"}
         query = """
         PREFIX skos:<http://www.w3.org/2004/02/skos/core#>
-        SELECT ?concept ?libelle ?acronym WHERE {
-            ?concept skos:inScheme ?conceptScheme .
-            ?concept skos:prefLabel ?libelle .
+        PREFIX xkos:<http://rdf-vocabulary.ddialliance.org/xkos#>
+
+        SELECT ?concept ?libelle ?acronym ?definitionValue ?shortDefinitionValue WHERE {
+            ?concept skos:inScheme ?conceptScheme;
+                     skos:prefLabel ?libelle .
             FILTER(regex(str(?conceptScheme),'/concepts/definitions/scheme'))
             FILTER(lang(?libelle) = 'fr')
             OPTIONAL {
                 ?concept skos:altLabel ?acronym .
                 FILTER(lang(?acronym) = 'fr')
             }
+            OPTIONAL {
+                ?concept skos:definition ?definition ;
+                         skos:scopeNote ?shortDefinition.
+                ?definition xkos:plainText ?definitionValue .
+                ?shortDefinition xkos:plainText ?shortDefinitionValue .
+                FILTER(lang(?definitionValue) = 'fr')
+                FILTER(lang(?shortDefinitionValue ) = 'fr')
+            }
         }
-        ORDER BY ?libelle
+        ORDER BY ?concept
         """
         params = {"query": query}
         nes = []
+        definitions = {
+            "short": {},
+            "standard": {}
+        }
+        entities = {}
         proxies = {}
 
         # Yep, dirty...
@@ -48,6 +63,11 @@ class KnowledgeBase:
                 'entity': entity,
                 'id': id
             }
+            if "shortDefinitionValue" in bind:
+                definitions["short"][id] = bind["shortDefinitionValue"]["value"]
+            if "definitionValue" in bind:
+                definitions["standard"][id] = bind["definitionValue"]["value"]
+            entities[id] = entity
             nes.append(ne)
             if "acronym" in bind:
                 acronym = bind["acronym"]["value"].translate(cls.TRANSLATION_CHAR_TABLE)
@@ -58,4 +78,4 @@ class KnowledgeBase:
                     'id': id
                 }
                 nes.append(ne)
-        return builder(nes)
+        return builder(nes), definitions, entities

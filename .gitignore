@@ -11,3 +11,6 @@ inspacy/__pycache__
 # Misc
 inspacy/excluded
 debug
+
+# VSCode
+**/.vscode
