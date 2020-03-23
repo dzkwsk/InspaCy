@@ -10,7 +10,7 @@ inspacy/__pycache__
 
 # Misc
 inspacy/excluded
-debug
+debug/*.jsonl
 
 # VSCode
 **/.vscode
