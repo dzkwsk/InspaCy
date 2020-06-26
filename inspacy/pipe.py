@@ -79,7 +79,7 @@ class RuleBuilder:
         """Build a rule matching regular expression."""
         id_ = ne['id']
         label = ne['label']
-        p = re.compile('\s*\([a-zA-Z0-9_\s]*\)')
+        p = re.compile('\s*\([a-zA-Zéèàôùï0-9_\s]*\)')
         pattern=p.sub('', ne['entity'])
         return {"id": id_, "label": label, "pattern": pattern}
 
